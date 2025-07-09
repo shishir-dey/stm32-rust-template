@@ -22,6 +22,7 @@ A template repository for bare-metal Rust projects on STM32 microcontrollers.
 │   ├── bsp
 │   │   └── mod.rs
 │   ├── components
+│   │   ├── data         // Host-testable crate
 │   │   ├── mod.rs
 │   │   └── storage
 │   │       └── mod.rs
