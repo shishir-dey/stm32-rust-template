@@ -17,6 +17,5 @@
     },
     "mounts": [
         "source=${localWorkspaceFolder},target=/workspaces/stm32-rust-template,type=bind,consistency=cached"
-    ],
-    "postCreateCommand": "rustup target add thumbv7em-none-eabihf"
+    ]
 }

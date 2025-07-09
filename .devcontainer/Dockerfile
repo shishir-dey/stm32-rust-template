@@ -10,24 +10,30 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     git \
     curl \
+    ca-certificates \
     tar \
     gzip \
     # Dependencies for Rust
     pkg-config \
     libssl-dev \
+    libudev-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Rust and common embedded tools
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
+# Install Rust using rustup
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable
+
+# Set PATH globally for future containers/sessions
 ENV PATH="/root/.cargo/bin:${PATH}"
+
+# Install embedded development tools
 RUN cargo install probe-run && \
     cargo install cargo-binutils && \
     rustup component add llvm-tools-preview && \
     rustup target add thumbv7em-none-eabihf
 
 # Verify installations
-RUN rustc --version
+RUN rustc --version && cargo --version
 
 # Set the working directory inside the container
 WORKDIR /workspaces/stm32-rust-template
