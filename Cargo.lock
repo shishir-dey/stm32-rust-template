@@ -66,6 +66,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "data"
+version = "0.1.0"
+
+[[package]]
 name = "embedded-hal"
 version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -152,6 +156,7 @@ dependencies = [
  "bitflags",
  "cortex-m",
  "cortex-m-rt",
+ "data",
  "panic-halt",
 ]
 
