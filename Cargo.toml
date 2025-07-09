@@ -1,0 +1,20 @@
+[package]
+name = "stm32-rust-template"
+version = "0.1.0"
+edition = "2024"
+description = "A template for starting bare-metal Rust projects on STM32 microcontrollers."
+authors = ["Shishir Dey <r0qck3ntp@mozmail.com>"]
+license = "MIT"
+repository = "https://github.com/shishir-dey/stm32-rust-template"
+homepage = "https://shishir-dey.github.io/stm32-rust-template"
+documentation = "https://shishir-dey.github.io/stm32-rust-template"
+readme = "README.md"
+keywords = ["stm32", "embedded", "rust", "bare-metal", "template", "cortex-m"]
+categories = ["embedded", "no-std", "templates"]
+
+[dependencies]
+cortex-m-rt = { version = "0.7.5"}
+panic-halt = "*"
+cortex-m = "0.7.7"
+bitflags = "2.9.1"
+alloc-cortex-m = "0.4.4"
