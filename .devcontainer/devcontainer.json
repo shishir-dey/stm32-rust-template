@@ -1,0 +1,22 @@
+{
+    "name": "Rust Embedded (STM32) Dev Container",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "workspaceFolder": "/workspaces/stm32-rust-template",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "rust-lang.rust-analyzer",
+                "tamasfe.even-better-toml",
+                "serayuzgur.crates",
+                "marus25.cortex-debug",
+                "ms-vscode.cpptools"
+            ]
+        }
+    },
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/workspaces/stm32-rust-template,type=bind,consistency=cached"
+    ],
+    "postCreateCommand": "rustup target add thumbv7em-none-eabihf"
+}
