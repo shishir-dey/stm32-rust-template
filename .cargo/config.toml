@@ -5,3 +5,6 @@ target = "thumbv7em-none-eabihf"
 rustflags = [
     "-C", "link-arg=-TSTM32F407VGTX_FLASH.x"
 ]
+
+[alias]
+test-target = "run --target thumbv7em-none-eabihf --test mod"

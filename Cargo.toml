@@ -26,3 +26,18 @@ cortex-m = "0.7.7"
 bitflags = "2.9.1"
 alloc-cortex-m = "0.4.4"
 data = { path = "src/components/data" }
+log = { version = "0.4.20", optional = true }
+defmt = { version = "1", optional = true }
+rtt-target = { version="0.6.1", optional= true }
+
+[dev-dependencies]
+embedded-test = { version = "0.6.2" }
+
+[features]
+default = ["log"]
+log = ["dep:log", "dep:rtt-target", "rtt-target/log", "embedded-test/log"]
+defmt = ["dep:defmt", "dep:rtt-target", "rtt-target/defmt", "embedded-test/defmt"]
+
+[[test]]
+name = "mod"
+harness = false

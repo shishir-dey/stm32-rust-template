@@ -41,30 +41,17 @@ A template repository for bare-metal Rust projects on STM32 microcontrollers.
     └── mod.rs
 ```
 
-## Usage
+## Setup
 
-### Building the project
-
-To build the project, run:
+Before you begin, you need to install a few tools.
 
 ```bash
-cargo build
-```
-
-For a release build, use the `--release` flag:
-
-```bash
-cargo build --release
-```
-
-### Flashing and Debugging
-
-To flash the application onto the microcontroller and start a debug session, you can use tools like `probe-run` or `gdb` with OpenOCD.
-
-First, ensure you have the necessary tools installed. For example, to install `probe-run`:
-
-```bash
+# For flashing and debugging the application on the target
 cargo install probe-run
+
+# For inspecting the compiled binary
+cargo install cargo-binutils
+rustup component add llvm-tools-preview
 ```
 
 You'll also need to configure the runner in `.cargo/config.toml`. Create this file if it doesn't exist, and add the following:
@@ -74,27 +61,13 @@ You'll also need to configure the runner in `.cargo/config.toml`. Create this fi
 runner = "probe-run --chip STM32F407VGTx" # Replace with your target chip
 ```
 
-Then you can run the application with:
+## Commands
 
-```bash
-cargo run --release
-```
-
-### Inspecting the compiled code
-
-To inspect the compiled code, you can use `cargo-binutils`.
-
-Install it with:
-```bash
-cargo install cargo-binutils
-rustup component add llvm-tools-preview
-```
-
-Then you can for example view the disassembly:
-```bash
-cargo objdump --release -- -d
-```
-or the symbol table:
-```bash
-cargo nm --release
-```
+| Command | Description |
+| :--- | :--- |
+| `cargo build` | Compile the project. |
+| `cargo build --release` | Compile the project in release mode for optimization. |
+| `cargo run --release` | Build and run the application on the target device in release mode. |
+| `cargo test-target` | Run the on-target test suite. |
+| `cargo objdump --release -- -d` | View the disassembly of the release binary. |
+| `cargo nm --release`| List the symbols in the release binary. |
