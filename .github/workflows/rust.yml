@@ -14,26 +14,15 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    env:
-      # Space-separated list of packages that should be built and tested on the host.
-      HOST_PACKAGES: "data"
-
     steps:
     - uses: actions/checkout@v4
     - name: Install Rust target
       run: rustup target add thumbv7em-none-eabihf
-    - name: Get host target triple
-      id: host
-      run: echo "target=$(rustc -vV | grep 'host:' | awk '{print $2}')" >> $GITHUB_OUTPUT
+    - name: Make run.sh executable
+      run: chmod +x run.sh
     - name: Build host components
-      run: |
-        package_flags=$(for pkg in $HOST_PACKAGES; do echo -n "--package $pkg "; done)
-        cargo build $package_flags --verbose --target ${{ steps.host.outputs.target }}
+      run: ./run.sh build-all-host
     - name: Test host components
-      run: |
-        package_flags=$(for pkg in $HOST_PACKAGES; do echo -n "--package $pkg "; done)
-        cargo test $package_flags --verbose --target ${{ steps.host.outputs.target }}
+      run: ./run.sh test-all-host
     - name: Build for target architecture
-      run: |
-        exclude_flags=$(for pkg in $HOST_PACKAGES; do echo -n "--exclude $pkg "; done)
-        cargo build --workspace $exclude_flags --verbose
+      run: ./run.sh build-target

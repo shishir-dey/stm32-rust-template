@@ -65,9 +65,12 @@ runner = "probe-run --chip STM32F407VGTx" # Replace with your target chip
 
 | Command | Description |
 | :--- | :--- |
-| `cargo build` | Compile the project. |
-| `cargo build --release` | Compile the project in release mode for optimization. |
-| `cargo run --release` | Build and run the application on the target device in release mode. |
-| `cargo test-target` | Run the on-target test suite. |
-| `cargo objdump --release -- -d` | View the disassembly of the release binary. |
-| `cargo nm --release`| List the symbols in the release binary. |
+| `./run.sh build-all-host` | Build all host-testable components. |
+| `./run.sh test-all-host` | Test all host-testable components. |
+| `./run.sh build-host <pkg>` | Build a specific host component (e.g., `data`). |
+| `./run.sh test-host <pkg>` | Test a specific host component (e.g., `data`). |
+| `./run.sh build-target` | Build the main application for the target device. |
+| `./run.sh run-target` | Build and run the main application on the target device. |
+| `./run.sh test-target <mod>` | Run an on-target test suite (e.g., `mod`). |
+| `./run.sh objdump [args...]` | View the disassembly of the release binary. |
+| `./run.sh nm [args...]`| List the symbols in the release binary. |
