@@ -1,5 +1,7 @@
 # STM32 Rust Template
 
+[![Rust](https://github.com/shishir-dey/stm32-rust-template/actions/workflows/rust.yml/badge.svg)](https://github.com/shishir-dey/stm32-rust-template/actions/workflows/rust.yml) [![Dependabot Updates](https://github.com/shishir-dey/stm32-rust-template/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/shishir-dey/stm32-rust-template/actions/workflows/dependabot/dependabot-updates)
+
 A template repository for bare-metal Rust projects on STM32 microcontrollers.
 
 ## Project Structure
