@@ -41,6 +41,10 @@ A template repository for bare-metal Rust projects on STM32 microcontrollers.
     └── mod.rs
 ```
 
+## References
+
+- [CMSIS-Driver specification](https://arm-software.github.io/CMSIS_5/Driver/html/index.html)
+
 ## Setup
 
 Before you begin, you need to install a few tools.
