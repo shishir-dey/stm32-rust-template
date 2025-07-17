@@ -1,5 +1,12 @@
+pub mod adc;
+pub mod can;
+pub mod dac;
 pub mod flash;
 pub mod gpio;
 pub mod i2c;
+pub mod sai;
 pub mod spi;
+pub mod timer;
 pub mod usart;
+pub mod usb;
+pub mod wwdg;

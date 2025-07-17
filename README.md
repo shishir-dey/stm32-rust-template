@@ -12,35 +12,41 @@ A template repository for bare-metal Rust projects on STM32 microcontrollers.
 ├── Cargo.toml
 ├── LICENSE
 ├── README.md
+├── run.sh
 ├── STM32F407VGTX_FLASH.x
 ├── src
-│   ├── apps
-│   │   └── mod.rs
-│   ├── arch
-│   │   ├── cortex_m4
-│   │   │   ├── mod.rs
-│   │   │   └── nvic.rs
-│   │   └── mod.rs
-│   ├── bsp
-│   │   └── mod.rs
-│   ├── components
-│   │   ├── data         // Host-testable crate
-│   │   ├── mod.rs
-│   │   └── storage
-│   │       └── mod.rs
-│   ├── driver
-│   │   ├── i2c
-│   │   │   ├── mod.rs
-│   │   │   └── stm32f407.rs
-│   │   └── mod.rs
-│   ├── main.rs
-│   ├── mcu
-│   │   ├── mod.rs
-│   │   └── stm32f407.rs
-│   └── utils
-│       └── mod.rs
+│   ├── apps
+│   ├── arch
+│   │   └── cortex_m4
+│   │       ├── nvic.rs
+│   │       ├── scb.rs
+│   │       └── systick.rs
+│   ├── bsp
+│   │   └── at24.rs
+│   ├── components
+│   │   └── data         // Host-testable crate
+│   ├── driver
+│   │   ├── adc
+│   │   ├── can
+│   │   ├── dac
+│   │   ├── flash
+│   │   ├── gpio
+│   │   ├── i2c
+│   │   │   └── stm32f407.rs
+│   │   ├── rtc
+│   │   ├── sai
+│   │   ├── spi
+│   │   ├── timer
+│   │   ├── usart
+│   │   ├── usb
+│   │   │   ├── device.rs
+│   │   │   └── host.rs
+│   │   └── wwdg
+│   ├── main.rs
+│   ├── mcu
+│   │   └── stm32f407.rs
+│   └── utils
 └── tests
-    └── mod.rs
 ```
 
 ## References

@@ -1,6 +1,3 @@
-//! This file requires the `bitflags` crate.
-//! Please add `bitflags = "2.5.0"` to your `Cargo.toml`.
-
 #![allow(dead_code)]
 
 use bitflags::bitflags;
