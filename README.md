@@ -17,12 +17,14 @@ A template repository for bare-metal Rust projects on STM32 microcontrollers.
 ├── src
 │   ├── apps
 │   ├── arch
-│   │   └── cortex_m4
-│   │       ├── nvic.rs
-│   │       ├── scb.rs
-│   │       └── systick.rs
+│   │   ├── cortex_m4
+│   │   │   ├── nvic.rs
+│   │   │   ├── scb.rs
+│   │   │   └── systick.rs
 │   ├── bsp
-│   │   └── at24.rs
+│   │   ├── at24.rs
+│   │   ├── ds1307.rs
+│   │   ├── spi_flash.rs
 │   ├── components
 │   │   └── data         // Host-testable crate
 │   ├── driver
