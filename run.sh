@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # List of host-side packages
-host_packages=("data")
+host_packages=("data" "libiot")
 
 # Test a specific host package: ./run.sh test-host data
 test_host() {

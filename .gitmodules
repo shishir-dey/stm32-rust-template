@@ -1,0 +1,3 @@
+[submodule "src/components/libiot"]
+	path = src/components/libiot
+	url = https://github.com/shishir-dey/libiot.git
