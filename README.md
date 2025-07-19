@@ -54,6 +54,7 @@ A template repository for bare-metal Rust projects on STM32 microcontrollers.
 ## References
 
 - [CMSIS-Driver specification](https://arm-software.github.io/CMSIS_5/Driver/html/index.html)
+- [SPI FLASH Library for STM32](https://github.com/nimaltd/spif)
 
 ## Setup
 
