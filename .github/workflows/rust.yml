@@ -16,6 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        submodules: recursive
     - name: Install Rust target
       run: rustup target add thumbv7em-none-eabihf
     - name: Make run.sh executable
