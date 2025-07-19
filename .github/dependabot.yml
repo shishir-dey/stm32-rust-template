@@ -1,6 +1,26 @@
 version: 2
+
+multi-ecosystem-groups:
+  infrastructure:
+    ecosystems:
+      - cargo
+      - gitsubmodule
+    patterns:
+      - "*"
+    schedule:
+      interval: "weekly"
+
 updates:
   - package-ecosystem: "cargo"
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      infrastructure: true
+
+  - package-ecosystem: "gitsubmodule"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      infrastructure: true
