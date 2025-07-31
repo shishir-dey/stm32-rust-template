@@ -26,7 +26,8 @@ A template repository for bare-metal Rust projects on STM32 microcontrollers.
 │   │   ├── ds1307.rs
 │   │   ├── spi_flash.rs
 │   ├── components
-│   │   └── data         // Host-testable crate
+│   │   ├── data         // Host-testable crate
+│   │   └── libiot       // IoT library components
 │   ├── driver
 │   │   ├── adc
 │   │   ├── can
@@ -46,7 +47,15 @@ A template repository for bare-metal Rust projects on STM32 microcontrollers.
 │   │   └── wwdg
 │   ├── main.rs
 │   ├── mcu
-│   │   └── stm32f407.rs
+│   │   └── stm32f407
+│   │       ├── adc.rs          // ADC register definitions
+│   │       ├── gpio.rs         // GPIO register definitions
+│   │       ├── i2c.rs          // I2C register definitions
+│   │       ├── mod.rs          // Base addresses and IRQ numbers
+│   │       ├── rcc.rs          // RCC register definitions
+│   │       ├── spi.rs          // SPI register definitions
+│   │       ├── timer.rs        // Timer register definitions
+│   │       └── usart.rs        // USART register definitions
 │   └── utils
 └── tests
 ```

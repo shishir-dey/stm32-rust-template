@@ -1,5 +1,6 @@
 extern crate alloc;
 use super::{BusSpeed, Event, I2c, Result, Status};
+use crate::mcu::stm32f407::{self, i2c::*};
 use crate::utils;
 use alloc::boxed::Box;
 use core::ops::FnMut;
@@ -11,52 +12,6 @@ use core::ptr;
 /// # Note
 /// This should be updated to match the actual clock configuration of your MCU.
 const PCLK1_HZ: u32 = 16_000_000;
-
-mod reg {
-    use crate::mcu::stm32f407;
-
-    #[repr(C)]
-    pub struct I2cRegs {
-        pub cr1: u32,
-        pub cr2: u32,
-        pub oar1: u32,
-        pub oar2: u32,
-        pub dr: u32,
-        pub sr1: u32,
-        pub sr2: u32,
-        pub ccr: u32,
-        pub trise: u32,
-        pub fltr: u32,
-    }
-
-    pub const I2C1_ADDR: u32 = stm32f407::I2C1_BASEADDR;
-    pub const I2C2_ADDR: u32 = stm32f407::I2C2_BASEADDR;
-    pub const I2C3_ADDR: u32 = stm32f407::I2C3_BASEADDR;
-}
-
-mod bits {
-    // CR1
-    pub const CR1_PE: u32 = 0;
-    pub const CR1_START: u32 = 8;
-    pub const CR1_STOP: u32 = 9;
-    pub const CR1_ACK: u32 = 10;
-    pub const CR1_SWRST: u32 = 15;
-
-    // SR1
-    pub const SR1_SB: u32 = 0;
-    pub const SR1_ADDR: u32 = 1;
-    pub const SR1_BTF: u32 = 2;
-    pub const SR1_RXNE: u32 = 6;
-    pub const SR1_TXE: u32 = 7;
-    pub const SR1_BERR: u32 = 8;
-    pub const SR1_ARLO: u32 = 9;
-
-    // SR2
-    pub const SR2_MSL: u32 = 0;
-    pub const SR2_BUSY: u32 = 1;
-    pub const SR2_TRA: u32 = 2;
-    pub const SR2_GENCALL: u32 = 4;
-}
 
 /// Configuration for the I2C driver.
 #[derive(Clone, Copy)]
@@ -82,7 +37,7 @@ impl Default for BusSpeed {
 
 /// A polling-based I2C driver for STM32F407.
 pub struct I2cDriver<'a> {
-    regs: *mut reg::I2cRegs,
+    regs: *mut RegisterBlock,
     _callback: Option<Box<dyn FnMut(Event) + 'a>>,
     config: I2cConfig,
     data_count: u32,
@@ -91,26 +46,41 @@ pub struct I2cDriver<'a> {
 impl<'a> I2cDriver<'a> {
     pub fn new(i2c_base_addr: u32, config: I2cConfig) -> Self {
         Self {
-            regs: i2c_base_addr as *mut reg::I2cRegs,
+            regs: i2c_base_addr as *mut RegisterBlock,
             _callback: None,
             config,
             data_count: 0,
         }
     }
 
-    fn regs(&self) -> &mut reg::I2cRegs {
+    /// Create a new I2C1 driver instance
+    pub fn new_i2c1(config: I2cConfig) -> Self {
+        Self::new(stm32f407::I2C1_BASEADDR, config)
+    }
+
+    /// Create a new I2C2 driver instance
+    pub fn new_i2c2(config: I2cConfig) -> Self {
+        Self::new(stm32f407::I2C2_BASEADDR, config)
+    }
+
+    /// Create a new I2C3 driver instance
+    pub fn new_i2c3(config: I2cConfig) -> Self {
+        Self::new(stm32f407::I2C3_BASEADDR, config)
+    }
+
+    fn regs(&self) -> &mut RegisterBlock {
         unsafe { &mut *self.regs }
     }
 
     fn generate_start_condition(&mut self) {
         let mut cr1 = unsafe { ptr::read_volatile(&self.regs().cr1) };
-        cr1 = utils::set_bit(cr1, bits::CR1_START, true);
+        cr1 = utils::set_bit(cr1, CR1_START_POS, true);
         unsafe { ptr::write_volatile(&mut self.regs().cr1, cr1) };
     }
 
     fn generate_stop_condition(&mut self) {
         let mut cr1 = unsafe { ptr::read_volatile(&self.regs().cr1) };
-        cr1 = utils::set_bit(cr1, bits::CR1_STOP, true);
+        cr1 = utils::set_bit(cr1, CR1_STOP_POS, true);
         unsafe { ptr::write_volatile(&mut self.regs().cr1, cr1) };
     }
 
@@ -138,7 +108,7 @@ impl<'a> I2cDriver<'a> {
 
     fn manage_acking(&mut self, enable: bool) {
         let mut cr1 = unsafe { ptr::read_volatile(&self.regs().cr1) };
-        cr1 = utils::set_bit(cr1, bits::CR1_ACK, enable);
+        cr1 = utils::set_bit(cr1, CR1_ACK_POS, enable);
         unsafe { ptr::write_volatile(&mut self.regs().cr1, cr1) };
     }
 }
@@ -151,12 +121,12 @@ impl<'a> I2c<'a> for I2cDriver<'a> {
 
         // Disable peripheral for configuration.
         let mut cr1 = unsafe { ptr::read_volatile(&self.regs().cr1) };
-        cr1 = utils::set_bit(cr1, bits::CR1_PE, false);
+        cr1 = utils::set_bit(cr1, CR1_PE_POS, false);
         unsafe { ptr::write_volatile(&mut self.regs().cr1, cr1) };
 
         // Configure CR1: Ack control - always enable for master.
         cr1 = unsafe { ptr::read_volatile(&self.regs().cr1) };
-        cr1 = utils::set_bit(cr1, bits::CR1_ACK, true);
+        cr1 = utils::set_bit(cr1, CR1_ACK_POS, true);
         unsafe { ptr::write_volatile(&mut self.regs().cr1, cr1) };
 
         // Configure CR2: Peripheral clock frequency.
@@ -198,7 +168,7 @@ impl<'a> I2c<'a> for I2cDriver<'a> {
 
         // Enable the peripheral.
         cr1 = unsafe { ptr::read_volatile(&self.regs().cr1) };
-        cr1 = utils::set_bit(cr1, bits::CR1_PE, true);
+        cr1 = utils::set_bit(cr1, CR1_PE_POS, true);
         unsafe { ptr::write_volatile(&mut self.regs().cr1, cr1) };
 
         Ok(())
@@ -206,7 +176,7 @@ impl<'a> I2c<'a> for I2cDriver<'a> {
 
     fn uninitialize(&mut self) -> Result<()> {
         let mut cr1 = unsafe { ptr::read_volatile(&self.regs().cr1) };
-        cr1 = utils::set_bit(cr1, bits::CR1_PE, false);
+        cr1 = utils::set_bit(cr1, CR1_PE_POS, false);
         unsafe { ptr::write_volatile(&mut self.regs().cr1, cr1) };
         self._callback = None;
         Ok(())
@@ -215,20 +185,20 @@ impl<'a> I2c<'a> for I2cDriver<'a> {
     fn master_transmit(&mut self, addr: u32, data: &[u8], xfer_pending: bool) -> Result<()> {
         self.data_count = 0;
         self.generate_start_condition();
-        while !self.get_flag_status(bits::SR1_SB) {}
+        while !self.get_flag_status(SR1_SB_POS) {}
 
         self.execute_address_phase_write(addr);
-        while !self.get_flag_status(bits::SR1_ADDR) {}
+        while !self.get_flag_status(SR1_ADDR_POS) {}
         self.clear_addr_flag();
 
         for byte in data {
-            while !self.get_flag_status(bits::SR1_TXE) {}
+            while !self.get_flag_status(SR1_TXE_POS) {}
             unsafe { ptr::write_volatile(&mut self.regs().dr, *byte as u32) };
             self.data_count += 1;
         }
 
-        while !self.get_flag_status(bits::SR1_TXE) {}
-        while !self.get_flag_status(bits::SR1_BTF) {}
+        while !self.get_flag_status(SR1_TXE_POS) {}
+        while !self.get_flag_status(SR1_BTF_POS) {}
 
         if !xfer_pending {
             self.generate_stop_condition();
@@ -244,10 +214,10 @@ impl<'a> I2c<'a> for I2cDriver<'a> {
         }
 
         self.generate_start_condition();
-        while !self.get_flag_status(bits::SR1_SB) {}
+        while !self.get_flag_status(SR1_SB_POS) {}
 
         self.execute_address_phase_read(addr);
-        while !self.get_flag_status(bits::SR1_ADDR) {}
+        while !self.get_flag_status(SR1_ADDR_POS) {}
 
         if len == 1 {
             self.manage_acking(false);
@@ -255,13 +225,13 @@ impl<'a> I2c<'a> for I2cDriver<'a> {
             if !xfer_pending {
                 self.generate_stop_condition();
             }
-            while !self.get_flag_status(bits::SR1_RXNE) {}
+            while !self.get_flag_status(SR1_RXNE_POS) {}
             data[0] = unsafe { ptr::read_volatile(&self.regs().dr) as u8 };
             self.data_count = 1;
         } else {
             self.clear_addr_flag();
             for i in (1..=len).rev() {
-                while !self.get_flag_status(bits::SR1_RXNE) {}
+                while !self.get_flag_status(SR1_RXNE_POS) {}
                 if i == 2 {
                     self.manage_acking(false);
                     if !xfer_pending {
@@ -311,12 +281,12 @@ impl<'a> I2c<'a> for I2cDriver<'a> {
         let sr2 = unsafe { ptr::read_volatile(&self.regs().sr2) };
 
         Status {
-            busy: utils::read_bit(sr2, bits::SR2_BUSY),
-            master_mode: utils::read_bit(sr2, bits::SR2_MSL),
-            receiving: !utils::read_bit(sr2, bits::SR2_TRA),
-            general_call: utils::read_bit(sr2, bits::SR2_GENCALL),
-            arbitration_lost: utils::read_bit(sr1, bits::SR1_ARLO),
-            bus_error: utils::read_bit(sr1, bits::SR1_BERR),
+            busy: utils::read_bit(sr2, SR2_BUSY_POS),
+            master_mode: utils::read_bit(sr2, SR2_MSL_POS),
+            receiving: !utils::read_bit(sr2, SR2_TRA_POS),
+            general_call: utils::read_bit(sr2, SR2_GENCALL_POS),
+            arbitration_lost: utils::read_bit(sr1, SR1_ARLO_POS),
+            bus_error: utils::read_bit(sr1, SR1_BERR_POS),
         }
     }
 }
