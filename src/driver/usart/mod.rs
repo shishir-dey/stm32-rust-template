@@ -243,3 +243,5 @@ pub trait Usart<'a> {
     /// Aborts an ongoing transfer operation.
     fn abort_transfer(&mut self) -> Result<()>;
 }
+
+pub mod stm32f407;

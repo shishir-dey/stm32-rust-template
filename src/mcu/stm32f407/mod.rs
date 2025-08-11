@@ -168,6 +168,19 @@ pub enum IRQn {
     FPU = 81,
 }
 
+pub trait PeripheralAccess {
+    const BASE_ADDRESS: u32;
+    type RegisterBlock;
+
+    fn ptr() -> *const Self::RegisterBlock {
+        Self::BASE_ADDRESS as *const Self::RegisterBlock
+    }
+
+    fn ptr_mut() -> *mut Self::RegisterBlock {
+        Self::BASE_ADDRESS as *mut Self::RegisterBlock
+    }
+}
+
 pub mod adc;
 pub mod gpio;
 pub mod i2c;
