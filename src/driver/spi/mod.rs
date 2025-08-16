@@ -137,3 +137,5 @@ pub trait Spi<'a> {
     /// Controls the slave select line in software-controlled modes.
     fn control_slave_select(&mut self, active: bool) -> Result<()>;
 }
+
+pub mod stm32f407;
