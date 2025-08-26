@@ -24,15 +24,15 @@ fn main() -> ! {
     // Initialize the allocator
     unsafe { ALLOCATOR.init(cortex_m_rt::heap_start() as usize, HEAP_SIZE) };
 
-    // Initialize the blink app (following C code pattern)
+    // Initialize the blink app
     if let Err(_) = apps::blink::init_blink_app() {
-        // Handle initialization error - just loop forever like C code would
+        // Handle initialization error
         loop {
             cortex_m::asm::nop();
         }
     }
 
-    // Run the blink app (blocking - matches C code behavior)
-    // This function never returns, just like the C code
+    // Run the blink app
+    // This function never returns
     apps::blink::run_blink_app();
 }
