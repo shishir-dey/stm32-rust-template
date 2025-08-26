@@ -71,7 +71,7 @@ Before you begin, you need to install a few tools.
 
 ```bash
 # For flashing and debugging the application on the target
-cargo install probe-run
+cargo install probe-rs
 
 # For inspecting the compiled binary
 cargo install cargo-binutils
@@ -82,7 +82,7 @@ You'll also need to configure the runner in `.cargo/config.toml`. Create this fi
 
 ```toml
 [target.'cfg(all(target_arch = "arm", target_os = "none"))']
-runner = "probe-run --chip STM32F407VGTx" # Replace with your target chip
+runner = ["probe-rs", "run", "--chip", "STM32F407VG", "--log-format=oneline"] # Replace with your target chip
 ```
 
 ## Commands

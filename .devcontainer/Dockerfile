@@ -27,8 +27,8 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Install embedded development tools
-RUN cargo install probe-run && \
-    cargo install cargo-binutils && \
+RUN curl --proto '=https' --tlsv1.2 -LsSf https://github.com/probe-rs/probe-rs/releases/latest/download/probe-rs-tools-installer.sh | sh
+RUN cargo install cargo-binutils && \
     rustup component add llvm-tools-preview && \
     rustup target add thumbv7em-none-eabihf
 

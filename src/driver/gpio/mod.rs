@@ -96,3 +96,5 @@ pub trait Gpio<'a> {
     /// Returns true for high, false for low.
     fn get_input(&self, pin: Pin) -> bool;
 }
+
+pub mod stm32f407;
