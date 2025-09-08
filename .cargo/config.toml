@@ -3,5 +3,19 @@ rustflags = [
     "-C", "link-arg=-Tlink.x",
 ]
 
+# Default runner for STM32F407
 [target.'cfg(all(target_arch = "arm", target_os = "none"))']
 runner = ["probe-rs", "run", "--chip", "STM32F407VG", "--log-format=oneline"]
+
+# Device-specific runners
+[target.'cfg(all(target_arch = "arm", target_os = "none", feature = "stm32f407"))']
+runner = ["probe-rs", "run", "--chip", "STM32F407VG", "--log-format=oneline"]
+
+[target.'cfg(all(target_arch = "arm", target_os = "none", feature = "stm32f401"))']
+runner = ["probe-rs", "run", "--chip", "STM32F401CC", "--log-format=oneline"]
+
+[target.'cfg(all(target_arch = "arm", target_os = "none", feature = "stm32f411"))']
+runner = ["probe-rs", "run", "--chip", "STM32F411CE", "--log-format=oneline"]
+
+[target.'cfg(all(target_arch = "arm", target_os = "none", feature = "stm32f103"))']
+runner = ["probe-rs", "run", "--chip", "STM32F103C8", "--log-format=oneline"]

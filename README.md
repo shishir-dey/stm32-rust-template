@@ -34,28 +34,50 @@ A template repository for bare-metal Rust projects on STM32 microcontrollers.
 │   │   ├── dac
 │   │   ├── flash
 │   │   ├── gpio
+│   │   │   ├── mod.rs
+│   │   │   ├── stm32f407.rs
+│   │   │   ├── stm32f401.rs
+│   │   │   ├── stm32f411.rs
+│   │   │   └── stm32f103.rs
 │   │   ├── i2c
-│   │   │   └── stm32f407.rs
+│   │   │   ├── mod.rs
+│   │   │   ├── stm32f407.rs
+│   │   │   ├── stm32f401.rs
+│   │   │   ├── stm32f411.rs
+│   │   │   └── stm32f103.rs
+│   │   ├── spi
+│   │   │   ├── mod.rs
+│   │   │   ├── stm32f407.rs
+│   │   │   ├── stm32f401.rs
+│   │   │   ├── stm32f411.rs
+│   │   │   └── stm32f103.rs
+│   │   ├── usart
+│   │   │   ├── mod.rs
+│   │   │   ├── stm32f407.rs
+│   │   │   ├── stm32f401.rs
+│   │   │   ├── stm32f411.rs
+│   │   │   └── stm32f103.rs
 │   │   ├── rtc
 │   │   ├── sai
-│   │   ├── spi
 │   │   ├── timer
-│   │   ├── usart
 │   │   ├── usb
 │   │   │   ├── device.rs
 │   │   │   └── host.rs
 │   │   └── wwdg
 │   ├── main.rs
 │   ├── mcu
-│   │   └── stm32f407
-│   │       ├── adc.rs          // ADC register definitions
-│   │       ├── gpio.rs         // GPIO register definitions
-│   │       ├── i2c.rs          // I2C register definitions
-│   │       ├── mod.rs          // Base addresses and IRQ numbers
-│   │       ├── rcc.rs          // RCC register definitions
-│   │       ├── spi.rs          // SPI register definitions
-│   │       ├── timer.rs        // Timer register definitions
-│   │       └── usart.rs        // USART register definitions
+│   │   ├── stm32f407           // STM32F407-specific modules
+│   │   │   ├── adc.rs          // ADC register definitions
+│   │   │   ├── gpio.rs         // GPIO register definitions
+│   │   │   ├── i2c.rs          // I2C register definitions
+│   │   │   ├── mod.rs          // Base addresses and IRQ numbers
+│   │   │   ├── rcc.rs          // RCC register definitions
+│   │   │   ├── spi.rs          // SPI register definitions
+│   │   │   ├── timer.rs        // Timer register definitions
+│   │   │   └── usart.rs        // USART register definitions
+│   │   ├── stm32f401           // STM32F401-specific modules
+│   │   ├── stm32f411           // STM32F411-specific modules
+│   │   └── stm32f103           // STM32F103-specific modules
 │   └── utils
 └── tests
 ```
@@ -93,8 +115,10 @@ runner = ["probe-rs", "run", "--chip", "STM32F407VG", "--log-format=oneline"] # 
 | `./run.sh test-all-host` | Test all host-testable components. |
 | `./run.sh build-host <pkg>` | Build a specific host component (e.g., `data`). |
 | `./run.sh test-host <pkg>` | Test a specific host component (e.g., `data`). |
-| `./run.sh build-target` | Build the main application for the target device. |
-| `./run.sh run-target` | Build and run the main application on the target device. |
+| `./run.sh build-target` | Build the main application for the target device (default: STM32F407). |
+| `./run.sh build-target-mcu <mcu>` | Build for specific MCU (stm32f407, stm32f401, stm32f411, stm32f103). |
+| `./run.sh run-target` | Build and run the main application on the target device (default: STM32F407). |
+| `./run.sh run-target-mcu <mcu>` | Build and run for specific MCU (stm32f407, stm32f401, stm32f411, stm32f103). |
 | `./run.sh test-target <mod>` | Run an on-target test suite (e.g., `mod`). |
 | `./run.sh objdump [args...]` | View the disassembly of the release binary. |
 | `./run.sh nm [args...]`| List the symbols in the release binary. |

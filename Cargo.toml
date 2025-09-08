@@ -35,9 +35,15 @@ rtt-target = { version="0.6.1", optional= true }
 embedded-test = { version = "0.6.2" }
 
 [features]
-default = ["log"]
+default = ["log", "stm32f407"]
 log = ["dep:log", "dep:rtt-target", "rtt-target/log", "embedded-test/log"]
 defmt = ["dep:defmt", "dep:rtt-target", "rtt-target/defmt", "embedded-test/defmt"]
+
+# MCU-specific features for conditional compilation
+stm32f407 = []
+stm32f103 = []
+stm32f401 = []
+stm32f411 = []
 
 [[test]]
 name = "mod"

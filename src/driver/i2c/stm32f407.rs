@@ -1,3 +1,4 @@
+#[cfg(feature = "stm32f407")]
 extern crate alloc;
 use super::{BusSpeed, Event, I2c, Result, Status};
 use crate::mcu::stm32f407::{self, i2c::*};

@@ -1,3 +1,4 @@
+#[cfg(feature = "stm32f407")]
 extern crate alloc;
 
 use super::{Direction, EventTrigger, EventType, Gpio, OutputMode, Pin, PullResistor, Result};

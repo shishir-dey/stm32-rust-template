@@ -1,3 +1,4 @@
+#[cfg(feature = "stm32f407")]
 extern crate alloc;
 
 use super::{BitOrder, Config, Event, FrameFormat, Mode, Result, SlaveSelectMode, Spi, Status};

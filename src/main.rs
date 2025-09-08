@@ -24,15 +24,15 @@ fn main() -> ! {
     // Initialize the allocator
     unsafe { ALLOCATOR.init(cortex_m_rt::heap_start() as usize, HEAP_SIZE) };
 
-    // Initialize the blink app
-    if let Err(_) = apps::blink::init_blink_app() {
+    // Initialize the empty app
+    if let Err(_) = apps::empty::init_empty_app() {
         // Handle initialization error
         loop {
             cortex_m::asm::nop();
         }
     }
 
-    // Run the blink app
+    // Run the empty app
     // This function never returns
-    apps::blink::run_blink_app();
+    apps::empty::run_empty_app();
 }

@@ -20,6 +20,21 @@ build_target() {
     cargo build --target thumbv7em-none-eabihf --release
 }
 
+# Build target for specific MCU: ./run.sh build-target-mcu stm32f407
+build_target_mcu() {
+    mcu="$1"
+    case "$mcu" in
+        stm32f407|stm32f401|stm32f411|stm32f103)
+            cargo build --target thumbv7em-none-eabihf --release --features "$mcu" --no-default-features
+            ;;
+        *)
+            echo "Unsupported MCU: $mcu"
+            echo "Supported: stm32f407, stm32f401, stm32f411, stm32f103"
+            exit 1
+            ;;
+    esac
+}
+
 # Run embedded test: ./run.sh test-target mod
 test_target() {
     mod="$1"
@@ -47,6 +62,21 @@ run_target() {
     cargo run --target thumbv7em-none-eabihf --release
 }
 
+# Run target for specific MCU: ./run.sh run-target-mcu stm32f407
+run_target_mcu() {
+    mcu="$1"
+    case "$mcu" in
+        stm32f407|stm32f401|stm32f411|stm32f103)
+            cargo run --target thumbv7em-none-eabihf --release --features "$mcu" --no-default-features
+            ;;
+        *)
+            echo "Unsupported MCU: $mcu"
+            echo "Supported: stm32f407, stm32f401, stm32f411, stm32f103"
+            exit 1
+            ;;
+    esac
+}
+
 # View the disassembly of the release binary
 objdump() {
     cargo objdump --release -- "$@"
@@ -61,11 +91,13 @@ usage() {
     echo "Usage:"
     echo "  $0 test-host <pkg>"
     echo "  $0 build-host <pkg>"
-    echo "  $0 build-target <pkg>"
+    echo "  $0 build-target"
+    echo "  $0 build-target-mcu <mcu>     # Build for specific MCU (stm32f407, stm32f401, stm32f411, stm32f103)"
     echo "  $0 test-target <mod>"
     echo "  $0 build-all-host"
     echo "  $0 test-all-host"
     echo "  $0 run-target"
+    echo "  $0 run-target-mcu <mcu>       # Run for specific MCU (stm32f407, stm32f401, stm32f411, stm32f103)"
     echo "  $0 objdump [args...]"
     echo "  $0 nm [args...]"
     exit 1
@@ -91,6 +123,10 @@ case "$cmd" in
         [ $# -eq 0 ] || usage
         build_target
         ;;
+    build-target-mcu)
+        [ $# -eq 1 ] || usage
+        build_target_mcu "$1"
+        ;;
     test-target)
         [ $# -eq 1 ] || usage
         test_target "$1"
@@ -103,6 +139,10 @@ case "$cmd" in
         ;;
     run-target)
         run_target
+        ;;
+    run-target-mcu)
+        [ $# -eq 1 ] || usage
+        run_target_mcu "$1"
         ;;
     objdump)
         objdump "$@"
