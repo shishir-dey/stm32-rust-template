@@ -1,3 +1,5 @@
+use crate::apps::App;
+
 pub struct EmptyApp {
     initialized: bool,
 }
@@ -19,46 +21,23 @@ impl EmptyApp {
         Ok(())
     }
 
-    /// Never-returning run loop that does nothing useful (just idles).
-    /// This preserves the `-> !` contract expected by `#[entry]` callers.
-    pub fn run(&mut self) -> ! {
-        // If not initialized yet, try to init; otherwise hang.
-        if !self.initialized && self.init().is_err() {
-            loop {
-                cortex_m::asm::nop();
-            }
+    /// Non-blocking tick that does nothing useful (just idles).
+    pub fn tick(&mut self) {
+        // If not initialized yet, try to init.
+        if !self.initialized {
+            let _ = self.init();
         }
 
-        // Forever idle (app "does nothing")
-        loop {
-            cortex_m::asm::nop();
-        }
+        // Do nothing
     }
 }
 
-/* API functions similar to your blink app */
-
-static mut EMPTY_APP: Option<EmptyApp> = None;
-
-pub fn init_empty_app() -> Result<(), i32> {
-    unsafe {
-        EMPTY_APP = Some(EmptyApp::new());
-        if let Some(ref mut app) = EMPTY_APP {
-            app.init()?;
-        }
+impl App for EmptyApp {
+    fn init(&mut self) -> Result<(), i32> {
+        self.init()
     }
-    Ok(())
-}
-
-pub fn run_empty_app() -> ! {
-    unsafe {
-        if let Some(ref mut app) = EMPTY_APP {
-            app.run();
-        } else {
-            loop {
-                cortex_m::asm::nop();
-            }
-        }
+    fn loop_step(&mut self) {
+        self.tick()
     }
 }
 

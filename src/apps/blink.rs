@@ -1,16 +1,53 @@
+use crate::apps::App;
+use crate::arch::cortex_m4::systick::get_ticks;
 use crate::driver::gpio::stm32f407::{GpioDriver, pins};
 use crate::driver::gpio::{Direction, Gpio};
 
-pub struct BlinkApp<'a> {
-    gpio_driver: Option<GpioDriver<'a>>,
-    initialized: bool,
+const BOUNCE: [u8; 6] = [0b0001, 0b0010, 0b0100, 0b1000, 0b0100, 0b0010];
+const IN_OUT: [u8; 6] = [0b1001, 0b0110, 0b1111, 0b0110, 0b1001, 0b0000];
+const TWINKLE: [u8; 8] = [
+    0b0001, 0b1000, 0b0010, 0b0100, 0b1000, 0b0001, 0b0100, 0b0010,
+];
+const CHASE: [u8; 4] = [0b0001, 0b0010, 0b0100, 0b1000];
+const FAST_MS: u32 = 120;
+const MED_MS: u32 = 220;
+const SLOW_MS: u32 = 320;
+const SMOKE_DELAY_MS: u32 = 700;
+const SMOKE_OFF_DELAY_MS: u32 = 200;
+
+#[derive(Clone, Copy)]
+enum State {
+    Smoke(u8),
+    SmokeDelay(u8),
+    SmokeOffDelay,
+    Bounce(u8, u8),
+    BounceDelay(u8, u8),
+    InOut(u8, u8),
+    InOutDelay(u8, u8),
+    AllOn,
+    AllOnDelay,
+    AllOff,
+    AllOffDelay,
+    Twinkle(u8, u8),
+    TwinkleDelay(u8, u8),
+    Chase(u8),
+    ChaseDelay(u8),
 }
 
-impl<'a> BlinkApp<'a> {
+pub struct BlinkApp {
+    gpio_driver: Option<GpioDriver<'static>>,
+    initialized: bool,
+    state: State,
+    last_tick: u32,
+}
+
+impl BlinkApp {
     pub fn new() -> Self {
         Self {
             gpio_driver: None,
             initialized: false,
+            state: State::Smoke(0),
+            last_tick: 0,
         }
     }
 
@@ -54,99 +91,148 @@ impl<'a> BlinkApp<'a> {
         }
     }
 
-    /// Smoke test: turn on each LED for a moment so you can confirm hardware.
-    fn smoke_test(gpio: &mut GpioDriver) {
-        for i in 0..4 {
-            for j in 0..4 {
-                Self::write_mask_4(gpio, if j == i { 1 << j } else { 0 });
-            }
-            Self::delay(700_000);
+    pub fn tick(&mut self) {
+        if !self.initialized {
+            return;
         }
-        // all off
-        Self::write_mask_4(gpio, 0);
-        Self::delay(200_000);
-    }
-
-    pub fn run(&mut self) -> ! {
-        if !self.initialized && self.init().is_err() {
-            loop {
-                cortex_m::asm::nop();
-            }
-        }
-
-        let fast = 120_000;
-        let med = 220_000;
-        let slow = 320_000;
-
         if let Some(ref mut gpio) = self.gpio_driver {
-            // First, prove all 4 work:
-            Self::smoke_test(gpio);
-
-            // Pretty patterns (4-bit masks)
-            const CHASE: [u8; 4] = [0b0001, 0b0010, 0b0100, 0b1000];
-            const BOUNCE: [u8; 6] = [0b0001, 0b0010, 0b0100, 0b1000, 0b0100, 0b0010];
-            const IN_OUT: [u8; 6] = [0b1001, 0b0110, 0b1111, 0b0110, 0b1001, 0b0000];
-            const TWINKLE: [u8; 8] = [
-                0b0001, 0b1000, 0b0010, 0b0100, 0b1000, 0b0001, 0b0100, 0b0010,
-            ];
-
-            loop {
-                for _ in 0..4 {
-                    for &m in &BOUNCE {
-                        Self::write_mask_4(gpio, m);
-                        Self::delay(med);
+            match self.state {
+                State::Smoke(step) => {
+                    if step < 4 {
+                        for j in 0..4 {
+                            Self::write_mask_4(gpio, if j == step { 1 << j } else { 0 });
+                        }
+                        self.last_tick = get_ticks();
+                        self.state = State::SmokeDelay(step);
+                    } else {
+                        Self::write_mask_4(gpio, 0);
+                        self.last_tick = get_ticks();
+                        self.state = State::SmokeOffDelay;
                     }
                 }
-                for _ in 0..6 {
-                    for &m in &IN_OUT {
-                        Self::write_mask_4(gpio, m);
-                        Self::delay(fast);
+                State::SmokeDelay(step) => {
+                    if get_ticks().wrapping_sub(self.last_tick) >= SMOKE_DELAY_MS {
+                        self.state = State::Smoke(step + 1);
                     }
                 }
-                Self::write_mask_4(gpio, 0b1111);
-                Self::delay(slow);
-                Self::write_mask_4(gpio, 0b0000);
-                Self::delay(med);
-                for _ in 0..6 {
-                    for &m in &TWINKLE {
-                        Self::write_mask_4(gpio, m);
-                        Self::delay(fast);
+                State::SmokeOffDelay => {
+                    if get_ticks().wrapping_sub(self.last_tick) >= SMOKE_OFF_DELAY_MS {
+                        self.state = State::Bounce(0, 0);
                     }
                 }
-                for &m in &CHASE {
+                State::Bounce(count, step) => {
+                    let m = BOUNCE[step as usize];
                     Self::write_mask_4(gpio, m);
-                    Self::delay(fast);
+                    self.last_tick = get_ticks();
+                    self.state = State::BounceDelay(count, step);
                 }
-            }
-        } else {
-            loop {
-                cortex_m::asm::nop();
+                State::BounceDelay(count, step) => {
+                    if get_ticks().wrapping_sub(self.last_tick) >= MED_MS {
+                        let next_step = step + 1;
+                        if next_step >= BOUNCE.len() as u8 {
+                            let next_count = count + 1;
+                            if next_count >= 4 {
+                                self.state = State::InOut(0, 0);
+                            } else {
+                                self.state = State::Bounce(next_count, 0);
+                            }
+                        } else {
+                            self.state = State::Bounce(count, next_step);
+                        }
+                    }
+                }
+                State::InOut(count, step) => {
+                    let m = IN_OUT[step as usize];
+                    Self::write_mask_4(gpio, m);
+                    self.last_tick = get_ticks();
+                    self.state = State::InOutDelay(count, step);
+                }
+                State::InOutDelay(count, step) => {
+                    if get_ticks().wrapping_sub(self.last_tick) >= FAST_MS {
+                        let next_step = step + 1;
+                        if next_step >= IN_OUT.len() as u8 {
+                            let next_count = count + 1;
+                            if next_count >= 6 {
+                                self.state = State::AllOn;
+                            } else {
+                                self.state = State::InOut(next_count, 0);
+                            }
+                        } else {
+                            self.state = State::InOut(count, next_step);
+                        }
+                    }
+                }
+                State::AllOn => {
+                    Self::write_mask_4(gpio, 0b1111);
+                    self.last_tick = get_ticks();
+                    self.state = State::AllOnDelay;
+                }
+                State::AllOnDelay => {
+                    if get_ticks().wrapping_sub(self.last_tick) >= SLOW_MS {
+                        self.state = State::AllOff;
+                    }
+                }
+                State::AllOff => {
+                    Self::write_mask_4(gpio, 0b0000);
+                    self.last_tick = get_ticks();
+                    self.state = State::AllOffDelay;
+                }
+                State::AllOffDelay => {
+                    if get_ticks().wrapping_sub(self.last_tick) >= MED_MS {
+                        self.state = State::Twinkle(0, 0);
+                    }
+                }
+                State::Twinkle(count, step) => {
+                    let m = TWINKLE[step as usize];
+                    Self::write_mask_4(gpio, m);
+                    self.last_tick = get_ticks();
+                    self.state = State::TwinkleDelay(count, step);
+                }
+                State::TwinkleDelay(count, step) => {
+                    if get_ticks().wrapping_sub(self.last_tick) >= FAST_MS {
+                        let next_step = step + 1;
+                        if next_step >= TWINKLE.len() as u8 {
+                            let next_count = count + 1;
+                            if next_count >= 6 {
+                                self.state = State::Chase(0);
+                            } else {
+                                self.state = State::Twinkle(next_count, 0);
+                            }
+                        } else {
+                            self.state = State::Twinkle(count, next_step);
+                        }
+                    }
+                }
+                State::Chase(step) => {
+                    let m = CHASE[step as usize];
+                    Self::write_mask_4(gpio, m);
+                    self.last_tick = get_ticks();
+                    self.state = State::ChaseDelay(step);
+                }
+                State::ChaseDelay(step) => {
+                    if get_ticks().wrapping_sub(self.last_tick) >= FAST_MS {
+                        let next_step = step + 1;
+                        if next_step >= CHASE.len() as u8 {
+                            self.state = State::Bounce(0, 0);
+                        } else {
+                            self.state = State::Chase(next_step);
+                        }
+                    }
+                }
             }
         }
     }
 }
 
-static mut BLINK_APP: Option<BlinkApp<'static>> = None;
-pub fn init_blink_app() -> Result<(), i32> {
-    unsafe {
-        BLINK_APP = Some(BlinkApp::new());
-        if let Some(ref mut app) = BLINK_APP {
-            app.init()?;
-        }
+impl App for BlinkApp {
+    fn init(&mut self) -> Result<(), i32> {
+        self.init()
     }
-    Ok(())
-}
-pub fn run_blink_app() -> ! {
-    unsafe {
-        if let Some(ref mut app) = BLINK_APP {
-            app.run();
-        } else {
-            loop {
-                cortex_m::asm::nop();
-            }
-        }
+    fn loop_step(&mut self) {
+        self.tick();
     }
 }
-pub fn create_simple_blink_app() -> BlinkApp<'static> {
+
+pub fn create_simple_blink_app() -> BlinkApp {
     BlinkApp::new()
 }

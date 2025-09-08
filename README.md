@@ -11,9 +11,9 @@ A template repository for bare-metal Rust projects on STM32 microcontrollers.
 ├── Cargo.lock
 ├── Cargo.toml
 ├── LICENSE
+├── memory.x
 ├── README.md
 ├── run.sh
-├── STM32F407VGTX_FLASH.x
 ├── src
 │   ├── apps
 │   ├── arch
