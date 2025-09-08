@@ -27,7 +27,7 @@ bitflags = "2.9.3"
 alloc-cortex-m = "0.4.4"
 data = { path = "src/components/data" }
 libiot = { path = "src/components/libiot" }
-log = { version = "0.4.20", optional = true }
+log = { version = "0.4.28", optional = true }
 defmt = { version = "1", optional = true }
 rtt-target = { version="0.6.1", optional= true }
 
