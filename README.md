@@ -34,29 +34,9 @@ A template repository for bare-metal Rust projects on STM32 microcontrollers.
 │   │   ├── dac
 │   │   ├── flash
 │   │   ├── gpio
-│   │   │   ├── mod.rs
-│   │   │   ├── stm32f407.rs
-│   │   │   ├── stm32f401.rs
-│   │   │   ├── stm32f411.rs
-│   │   │   └── stm32f103.rs
 │   │   ├── i2c
-│   │   │   ├── mod.rs
-│   │   │   ├── stm32f407.rs
-│   │   │   ├── stm32f401.rs
-│   │   │   ├── stm32f411.rs
-│   │   │   └── stm32f103.rs
 │   │   ├── spi
-│   │   │   ├── mod.rs
-│   │   │   ├── stm32f407.rs
-│   │   │   ├── stm32f401.rs
-│   │   │   ├── stm32f411.rs
-│   │   │   └── stm32f103.rs
 │   │   ├── usart
-│   │   │   ├── mod.rs
-│   │   │   ├── stm32f407.rs
-│   │   │   ├── stm32f401.rs
-│   │   │   ├── stm32f411.rs
-│   │   │   └── stm32f103.rs
 │   │   ├── rtc
 │   │   ├── sai
 │   │   ├── timer
@@ -77,7 +57,8 @@ A template repository for bare-metal Rust projects on STM32 microcontrollers.
 │   │   │   └── usart.rs        // USART register definitions
 │   │   ├── stm32f401           // STM32F401-specific modules
 │   │   ├── stm32f411           // STM32F411-specific modules
-│   │   └── stm32f103           // STM32F103-specific modules
+│   │   ├── stm32f103           // STM32F103-specific modules
+│   │   └── stm32g030           // STM32G030-specific modules
 │   └── utils
 └── tests
 ```

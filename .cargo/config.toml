@@ -19,3 +19,6 @@ runner = ["probe-rs", "run", "--chip", "STM32F411CE", "--log-format=oneline"]
 
 [target.'cfg(all(target_arch = "arm", target_os = "none", feature = "stm32f103"))']
 runner = ["probe-rs", "run", "--chip", "STM32F103C8", "--log-format=oneline"]
+
+[target.'cfg(all(target_arch = "arm", target_os = "none", feature = "stm32g030"))']
+runner = ["probe-rs", "run", "--chip", "STM32G030C8", "--log-format=oneline"]

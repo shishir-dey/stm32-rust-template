@@ -24,12 +24,12 @@ build_target() {
 build_target_mcu() {
     mcu="$1"
     case "$mcu" in
-        stm32f407|stm32f401|stm32f411|stm32f103)
+        stm32f407|stm32f401|stm32f411|stm32f103|stm32g030)
             cargo build --target thumbv7em-none-eabihf --release --features "$mcu" --no-default-features
             ;;
         *)
             echo "Unsupported MCU: $mcu"
-            echo "Supported: stm32f407, stm32f401, stm32f411, stm32f103"
+            echo "Supported: stm32f407, stm32f401, stm32f411, stm32f103, stm32g030"
             exit 1
             ;;
     esac
@@ -66,12 +66,12 @@ run_target() {
 run_target_mcu() {
     mcu="$1"
     case "$mcu" in
-        stm32f407|stm32f401|stm32f411|stm32f103)
+        stm32f407|stm32f401|stm32f411|stm32f103|stm32g030)
             cargo run --target thumbv7em-none-eabihf --release --features "$mcu" --no-default-features
             ;;
         *)
             echo "Unsupported MCU: $mcu"
-            echo "Supported: stm32f407, stm32f401, stm32f411, stm32f103"
+            echo "Supported: stm32f407, stm32f401, stm32f411, stm32f103, stm32g030"
             exit 1
             ;;
     esac
@@ -92,12 +92,12 @@ usage() {
     echo "  $0 test-host <pkg>"
     echo "  $0 build-host <pkg>"
     echo "  $0 build-target"
-    echo "  $0 build-target-mcu <mcu>     # Build for specific MCU (stm32f407, stm32f401, stm32f411, stm32f103)"
+    echo "  $0 build-target-mcu <mcu>     # Build for specific MCU (stm32f407, stm32f401, stm32f411, stm32f103, stm32g030)"
     echo "  $0 test-target <mod>"
     echo "  $0 build-all-host"
     echo "  $0 test-all-host"
     echo "  $0 run-target"
-    echo "  $0 run-target-mcu <mcu>       # Run for specific MCU (stm32f407, stm32f401, stm32f411, stm32f103)"
+    echo "  $0 run-target-mcu <mcu>       # Run for specific MCU (stm32f407, stm32f401, stm32f411, stm32f103, stm32g030)"
     echo "  $0 objdump [args...]"
     echo "  $0 nm [args...]"
     exit 1
