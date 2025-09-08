@@ -23,7 +23,7 @@ categories = ["embedded", "no-std", "templates"]
 cortex-m-rt = { version = "0.7.5"}
 panic-halt = "*"
 cortex-m = "0.7.7"
-bitflags = "2.9.3"
+bitflags = "2.9.4"
 alloc-cortex-m = "0.4.4"
 data = { path = "src/components/data" }
 libiot = { path = "src/components/libiot" }
