@@ -1,3 +1,10 @@
+//! # GPIO Driver
+//!
+//! Provides a hardware abstraction layer for General Purpose Input/Output (GPIO)
+//! pins on STM32 microcontrollers.
+//!
+//! This module defines the GPIO trait and supporting types for pin configuration,
+//! interrupt handling, and digital I/O operations across different STM32 families.
 #![allow(dead_code)]
 
 use bitflags::bitflags;

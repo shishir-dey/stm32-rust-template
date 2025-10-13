@@ -1,3 +1,11 @@
+//! # STM32 Rust Template
+//!
+//! A bare-metal Rust template for STM32 microcontrollers, providing a structured
+//! framework for embedded applications with modular drivers, BSP support, and
+//! application management.
+//!
+//! This crate serves as the main entry point, initializing the system and
+//! orchestrating application execution on Cortex-M4 based STM32 devices.
 #![no_std]
 #![no_main]
 

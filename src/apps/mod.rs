@@ -1,3 +1,11 @@
+//! # Application Management
+//!
+//! Provides a framework for managing multiple embedded applications within the
+//! STM32 template. Applications implement the `App` trait and are registered
+//! at startup for coordinated initialization and execution.
+//!
+//! This module enables modular application development where each app can
+//! run independently while sharing system resources.
 pub mod blink;
 pub mod empty;
 

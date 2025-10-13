@@ -1,3 +1,11 @@
+//! # I2C Driver
+//!
+//! Provides a hardware abstraction layer for Inter-Integrated Circuit (I2C)
+//! communication on STM32 microcontrollers.
+//!
+//! This module defines the I2C trait and supporting types for master/slave
+//! communication, bus speed configuration, and address handling across
+//! different STM32 families.
 #![allow(dead_code)]
 
 use bitflags::bitflags;

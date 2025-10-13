@@ -1,3 +1,10 @@
+//! # Utility Functions
+//!
+//! Common utility functions for bit manipulation and other low-level operations
+//! used throughout the STM32 template.
+//!
+//! These functions provide safe, efficient implementations for register-level
+//! operations that are frequently needed when working with microcontroller hardware.
 use core::assert;
 
 /// Sets `n_bits` bits at `bit_position` in `value` to `new_bits_val`.

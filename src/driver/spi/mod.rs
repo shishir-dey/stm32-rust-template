@@ -1,3 +1,11 @@
+//! # SPI Driver
+//!
+//! Provides a hardware abstraction layer for Serial Peripheral Interface (SPI)
+//! communication on STM32 microcontrollers.
+//!
+//! This module defines the SPI trait and supporting types for configuring
+//! master/slave modes, frame formats, and data transfer operations across
+//! different STM32 families.
 #![allow(dead_code)]
 
 use bitflags::bitflags;

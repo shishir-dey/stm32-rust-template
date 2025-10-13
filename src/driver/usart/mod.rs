@@ -1,3 +1,11 @@
+//! # USART Driver
+//!
+//! Provides a hardware abstraction layer for Universal Synchronous/Asynchronous
+//! Receiver/Transmitter (USART) communication on STM32 microcontrollers.
+//!
+//! This module defines the USART trait and supporting types for serial
+//! communication including UART, synchronous modes, and modem control
+//! across different STM32 families.
 #![allow(dead_code)]
 
 use bitflags::bitflags;

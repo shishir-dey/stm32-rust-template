@@ -1,3 +1,10 @@
+//! # STM32F407 MCU Implementation
+//!
+//! Contains register definitions, memory maps, and peripheral configurations
+//! specific to the STM32F407 microcontroller family.
+//!
+//! This module provides base addresses for all peripherals, interrupt numbers,
+//! and type-safe register access through the PeripheralAccess trait.
 pub const TIM2_BASEADDR: u32 = 0x40000000;
 pub const TIM3_BASEADDR: u32 = 0x40000400;
 pub const TIM4_BASEADDR: u32 = 0x40000800;
