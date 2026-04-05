@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["HEAP_SIZE"],"fn":["__cortex_m_rt_main"],"mod":["apps","arch","bsp","components","driver","mcu","utils"],"static":["ALLOCATOR"]};

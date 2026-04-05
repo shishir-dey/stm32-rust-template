@@ -1,0 +1,1 @@
+rd_("Acstm32_rust_template")

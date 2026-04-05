@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["BitOrder","FrameFormat","Mode","SlaveSelectMode"],"mod":["stm32f103","stm32f401","stm32f407","stm32f411"],"struct":["Config","Event","Status"],"trait":["Spi"],"type":["Error","Result"]};

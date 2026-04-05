@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["EE24_ADDRESS_DEFAULT"],"enum":["EepromError","EepromSize"],"struct":["Eeprom","EepromConfig"],"type":["EepromResult"]};

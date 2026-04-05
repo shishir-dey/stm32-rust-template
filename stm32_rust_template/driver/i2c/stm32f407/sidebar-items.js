@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["PCLK1_HZ"],"struct":["I2cConfig","I2cDriver"]};

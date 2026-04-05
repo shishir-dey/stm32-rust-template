@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["SPIF_BLOCK_SIZE","SPIF_PAGE_SIZE","SPIF_SECTOR_SIZE"],"enum":["FlashSize","Manufacturer"],"struct":["SpiFlash"]};

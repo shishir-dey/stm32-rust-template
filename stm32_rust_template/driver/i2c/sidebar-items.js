@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["BusSpeed"],"mod":["stm32f103","stm32f401","stm32f407","stm32f411"],"struct":["Event","Status"],"trait":["I2c"],"type":["Error","Result"]};

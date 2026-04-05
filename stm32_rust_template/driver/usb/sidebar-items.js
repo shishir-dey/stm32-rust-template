@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["EndpointType","UsbPid","UsbRole","UsbSpeed"],"mod":["device","endpoint","host","packet_size"],"struct":["UsbPin"]};

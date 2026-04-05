@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["PCLK1_HZ","PCLK2_HZ"],"struct":["UsartDriver"]};
